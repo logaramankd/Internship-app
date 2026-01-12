@@ -18,7 +18,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: "/internship-app/backend/api/register.php",
+            url: "https://internship-app-lz1o.onrender.com/api/register.php",
             type: "POST",
             contentType: "application/json",
             data: JSON.stringify({ name, email, password }),
@@ -52,7 +52,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: "/internship-app/backend/api/login.php",
+            url: "https://internship-app-lz1o.onrender.com/api/login.php",
             type: "POST",
             contentType: "application/json",
             data: JSON.stringify({ email, password }),
