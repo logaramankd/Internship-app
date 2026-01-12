@@ -1,0 +1,76 @@
+$(document).ready(function () {
+
+    const sessionKey = localStorage.getItem("session_key");
+    if (sessionKey) {
+        window.location.href = "/internship-app/fronend/pages/profile.html";
+        return;
+    }
+
+    // SIGN UP
+    $("#signupBtn").on("click", function () {
+        const name = $("#signupName").val().trim();
+        const email = $("#signupEmail").val().trim();
+        const password = $("#signupPassword").val();
+
+        if (!name || !email || !password) {
+            alert("All fields are required");
+            return;
+        }
+
+        $.ajax({
+            url: "/internship-app/backend/api/register.php",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({ name, email, password }),
+            success: function () {
+                alert("Signup successful. Please login.");
+
+                $("#signupName").val("");
+                $("#signupEmail").val("");
+                $("#signupPassword").val("");
+
+                const signinTab = new bootstrap.Tab(
+                    document.querySelector('[data-bs-target="#signin"]')
+                );
+                signinTab.show();
+            },
+            error: function (xhr) {
+                const res = xhr.responseJSON;
+                alert(res?.message || "Signup failed");
+            }
+        });
+    });
+
+    // SIGN IN
+    $("#signinBtn").on("click", function () {
+        const email = $("#signinEmail").val().trim();
+        const password = $("#signinPassword").val();
+
+        if (!email || !password) {
+            alert("Email and password are required");
+            return;
+        }
+
+        $.ajax({
+            url: "/internship-app/backend/api/login.php",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({ email, password }),
+            success: function (response) {
+
+                // ✅ STORE REDIS SESSION KEY
+                localStorage.setItem("session_key", response.session_key);
+
+                localStorage.setItem("user_name", response.user.name);
+                localStorage.setItem("user_email", response.user.email);
+
+                window.location.href = "/internship-app/frontend/pages/profile.html";
+            },
+            error: function (xhr) {
+                const res = xhr.responseJSON;
+                alert(res?.message || "Login failed");
+            }
+        });
+    });
+
+});
