@@ -1,33 +1,39 @@
 FROM php:8.2-apache
 
-# System deps
+# Install system packages
 RUN apt-get update && apt-get install -y \
     libzip-dev \
     unzip \
-    libssl-dev \
-    pkg-config \
+    git \
+    curl \
     && docker-php-ext-install zip pdo pdo_mysql
 
-# Mongo + Redis
+# Install MongoDB + Redis extensions
 RUN pecl install mongodb redis \
     && docker-php-ext-enable mongodb redis
 
 # Enable Apache modules
 RUN a2enmod rewrite headers
 
-# Allow .htaccess overrides
+# Allow .htaccess
 RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
+
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 WORKDIR /var/www/html
 
-# Copy backend code
+# Copy backend code (WITHOUT vendor)
 COPY . /var/www/html/
 
-# Copy CORS config into Apache
+# Install PHP dependencies inside container
+RUN composer install --no-dev --optimize-autoloader
+
+# Copy CORS config
 COPY cors.conf /etc/apache2/conf-available/cors.conf
 RUN a2enconf cors
 
-# Permissions
+# Set permissions
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
