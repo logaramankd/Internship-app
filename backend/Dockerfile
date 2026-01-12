@@ -15,16 +15,16 @@ RUN pecl install mongodb redis \
 # Enable rewrite
 RUN a2enmod rewrite
 
+# Allow .htaccess overrides (CRITICAL)
+RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
+
 WORKDIR /var/www/html
 
 # Copy backend code
 COPY . /var/www/html/
 
-# Set correct permissions (CRITICAL)
+# Permissions
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
-
-# Allow Apache to access this directory
-RUN sed -i 's|/var/www/|/var/www/html|g' /etc/apache2/apache2.conf
 
 EXPOSE 80
