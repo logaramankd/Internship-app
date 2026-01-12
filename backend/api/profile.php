@@ -49,7 +49,7 @@ try {
         $designation = $_POST['designation'] ?? '';
         $company = $_POST['company'] ?? '';
 
-        if (!$age || !$dob || !$contact || !$address) {
+        if (!$age || !$dob || !$contact || !$address || !$gender || !$designation || !$company) {
             echo json_encode([
                 "status" => "error",
                 "message" => "All fields are required"
@@ -65,6 +65,7 @@ try {
                 'dob' => $dob,
                 'contact' => $contact,
                 'address' => $address,
+                'gender' => $gender, 
                 'designation'=>$designation,
                 'company'=>$company,
                 'updated_at' => date("Y-m-d H:i:s")

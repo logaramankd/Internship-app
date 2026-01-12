@@ -9,10 +9,52 @@ $(document).ready(function () {
         return;
     }
 
-    $("#profileName").text(userName);
-    $("#profileEmail").text(userEmail);
+    $("#profileName").text(userName || "");
+    $("#profileEmail").text(userEmail || "");
 
+    const firstLetter = userName ? userName.charAt(0).toUpperCase() : "U";
+    $("#avatarLetter").text(firstLetter);
+
+    // =====================================
+    // INPUT RESTRICTIONS (BIND ONCE)
+    // =====================================
+
+    // Age: only digits, 0–99
+    $("#age").on("input", function () {
+        let value = $(this).val().replace(/\D/g, "");
+
+        if (value === "") {
+            $(this).val("");
+            return;
+        }
+
+        let num = parseInt(value, 10);
+        if (num < 0) num = 0;
+        if (num > 99) num = 99;
+
+        $(this).val(num);
+    });
+
+    // Contact: only digits, first digit 6/7/8/9, max 10 digits
+    $("#contact").on("input", function () {
+        let value = $(this).val().replace(/\D/g, "");
+
+        // First digit must be 6,7,8,9
+        if (value.length === 1 && !/^[6789]$/.test(value)) {
+            value = "";
+        }
+
+        // Max 10 digits
+        if (value.length > 10) {
+            value = value.slice(0, 10);
+        }
+
+        $(this).val(value);
+    });
+
+    // =====================================
     // LOAD PROFILE
+    // =====================================
     $.ajax({
         url: "https://internship-app-lz1o.onrender.com/api/profile.php",
         method: "GET",
@@ -32,11 +74,10 @@ $(document).ready(function () {
             alert("Failed to load profile data");
         }
     });
-    const firstLetter = userName ? userName.charAt(0).toUpperCase() : "U";
-    $("#avatarLetter").text(firstLetter);
 
-
+    // =====================================
     // SAVE PROFILE
+    // =====================================
     $("#saveProfileBtn").click(function () {
 
         const age = $("#age").val().trim();
@@ -47,37 +88,6 @@ $(document).ready(function () {
         const designation = $("#designation").val().trim();
         const company = $("#company").val().trim();
 
-        // === VALIDATIONS ===
-        $("#age").on("input", function () {
-            let value = $(this).val().replace(/\D/g, ""); // allow only digits
-
-            if (value === "") {
-                $(this).val("");
-                return;
-            }
-
-            let num = parseInt(value, 10);
-
-            if (num < 0) num = 0;
-            if (num > 99) num = 99;
-
-            $(this).val(num);
-        });
-        $("#contact").on("input", function () {
-            let value = $(this).val().replace(/\D/g, ""); // only digits
-
-            // First digit must be 6,7,8,9
-            if (value.length === 1 && !/^[6789]$/.test(value)) {
-                value = "";
-            }
-
-            // Max 10 digits
-            if (value.length > 10) {
-                value = value.slice(0, 10);
-            }
-
-            $(this).val(value);
-        });
         // Required check
         if (!age || !dob || !contact || !address || !gender) {
             alert("All fields including gender are required");
@@ -98,14 +108,13 @@ $(document).ready(function () {
             return;
         }
 
-        // Contact validation (10 digits, starts with 6/7/8/9)
+        // Contact validation
         if (!/^[6789][0-9]{9}$/.test(contact)) {
             alert("Contact number must be 10 digits and start with 6, 7, 8, or 9");
             return;
         }
 
-
-        // === AJAX SAVE ===
+        // AJAX SAVE
         $.ajax({
             url: "https://internship-app-lz1o.onrender.com/api/profile.php",
             method: "POST",
@@ -117,7 +126,7 @@ $(document).ready(function () {
                 address,
                 gender,
                 designation,
-                company,
+                company
             },
             success: function (res) {
                 if (res.status === "success") {
@@ -133,13 +142,18 @@ $(document).ready(function () {
 
     });
 
-
+    // =====================================
     // LOGOUT
+    // =====================================
     $("#logoutBtn").click(function () {
-        $.post("https://internship-app-lz1o.onrender.com/api/logout.php", { session_key: sessionKey }, function () {
-            localStorage.clear();
-            window.location.href = "/pages/SignUp.html";
-        });
+        $.post(
+            "https://internship-app-lz1o.onrender.com/api/logout.php",
+            { session_key: sessionKey },
+            function () {
+                localStorage.clear();
+                window.location.href = "/pages/SignUp.html";
+            }
+        );
     });
 
 });
