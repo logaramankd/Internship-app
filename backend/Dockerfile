@@ -17,10 +17,14 @@ RUN a2enmod rewrite
 
 WORKDIR /var/www/html
 
-# Copy current backend folder (because Dockerfile is already inside backend/)
+# Copy backend code
 COPY . /var/www/html/
 
-# Permissions
-RUN chown -R www-data:www-data /var/www/html
+# Set correct permissions (CRITICAL)
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
+
+# Allow Apache to access this directory
+RUN sed -i 's|/var/www/|/var/www/html|g' /etc/apache2/apache2.conf
 
 EXPOSE 80
