@@ -2,7 +2,7 @@ $(document).ready(function () {
 
     const sessionKey = localStorage.getItem("session_key");
     if (sessionKey) {
-        window.location.href = "/internship-app/fronend/pages/profile.html";
+        window.location.href = "/profile.html";
         return;
     }
 
@@ -64,7 +64,7 @@ $(document).ready(function () {
                 localStorage.setItem("user_name", response.user.name);
                 localStorage.setItem("user_email", response.user.email);
 
-                window.location.href = "/internship-app/frontend/pages/profile.html";
+                window.location.href = "/profile.html";
             },
             error: function (xhr) {
                 const res = xhr.responseJSON;

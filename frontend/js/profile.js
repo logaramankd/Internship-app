@@ -78,9 +78,9 @@ $(document).ready(function () {
 
     // LOGOUT
     $("#logoutBtn").click(function () {
-        $.post("/internship-app/backend/api/logout.php", { session_key: sessionKey }, function () {
+        $.post("https://internship-app-lz1o.onrender.com/api/logout.php", { session_key: sessionKey }, function () {
             localStorage.clear();
-            window.location.href = "/internship-app/frontend/pages/SignUp.html";
+            window.location.href = "/pages/SignUp.html";
         });
     });
 
