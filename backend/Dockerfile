@@ -15,11 +15,10 @@ RUN pecl install mongodb redis \
 # Enable rewrite
 RUN a2enmod rewrite
 
-# Set Apache to serve backend folder
 WORKDIR /var/www/html
 
-# Copy ONLY backend into web root
-COPY backend/ /var/www/html/
+# Copy current backend folder (because Dockerfile is already inside backend/)
+COPY . /var/www/html/
 
 # Permissions
 RUN chown -R www-data:www-data /var/www/html
