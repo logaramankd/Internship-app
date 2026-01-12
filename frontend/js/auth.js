@@ -58,7 +58,7 @@ $(document).ready(function () {
             data: JSON.stringify({ email, password }),
             success: function (response) {
 
-                // ✅ STORE REDIS SESSION KEY
+                // STORE REDIS SESSION KEY
                 localStorage.setItem("session_key", response.session_key);
 
                 localStorage.setItem("user_name", response.user.name);
