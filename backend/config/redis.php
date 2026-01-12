@@ -1,5 +1,4 @@
 <?php
-
 // Load .env locally (same pattern as MySQL)
 $envPath = __DIR__ . '/../.env';
 if (file_exists($envPath)) {
@@ -9,39 +8,31 @@ if (file_exists($envPath)) {
             putenv($line);
         }
     }
-}
+}$redisUrl = getenv("REDIS_URL");
 
-$redis = new Redis();
-
-$redisHost = getenv("REDIS_HOST");
-$redisPort = getenv("REDIS_PORT");
-$redisPass = getenv("REDIS_PASSWORD");
-$redisTls  = getenv("REDIS_TLS");
-
-if (!$redisHost || !$redisPort) {
+if (!$redisUrl) {
     http_response_code(500);
     echo json_encode([
         "status" => "error",
-        "message" => "Redis environment variables not set",
-        "debug" => [
-            "REDIS_HOST" => $redisHost,
-            "REDIS_PORT" => $redisPort,
-            "REDIS_TLS"  => $redisTls
-        ]
+        "message" => "REDIS_URL not set in environment"
     ]);
     exit;
 }
 
-try {
-    if ($redisTls === "true") {
-        $redis->connect("tls://" . $redisHost, $redisPort, 5);
-    } else {
-        $redis->connect($redisHost, $redisPort, 5);
-    }
+$redis = new Redis();
 
-    if ($redisPass) {
-        $redis->auth($redisPass);
-    }
+try {
+    $parts = parse_url($redisUrl);
+
+    $host = $parts['host'];
+    $port = $parts['port'];
+    $pass = $parts['pass'];
+
+    // TLS connection (Upstash requires this)
+    $redis->connect($host, $port, 5, null, 0, 0, [
+        'auth' => $pass,
+        'ssl' => ['verify_peer' => false]
+    ]);
 
     $redis->ping();
 
