@@ -2,7 +2,7 @@ $(document).ready(function () {
 
     const sessionKey = localStorage.getItem("session_key");
     if (sessionKey) {
-        window.location.href = "/profile.html";
+        window.location.href = "/pages/profile.html";
         return;
     }
 
@@ -64,7 +64,7 @@ $(document).ready(function () {
                 localStorage.setItem("user_name", response.user.name);
                 localStorage.setItem("user_email", response.user.email);
 
-                window.location.href = "/profile.html";
+                window.location.href = "/pages/profile.html";
             },
             error: function (xhr) {
                 const res = xhr.responseJSON;
