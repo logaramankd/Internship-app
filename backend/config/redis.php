@@ -29,7 +29,7 @@ try {
     $pass = $parts['pass'];
 
     // TLS connection (Upstash requires this)
-    $redis->connect($host, $port, 5, null, 0, 0, [
+    $redis->connect("tls://$host", $port, 5, null, 0, 0, [
         'auth' => $pass,
         'ssl' => ['verify_peer' => false]
     ]);
