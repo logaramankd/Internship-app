@@ -1,14 +1,16 @@
 FROM php:8.2-apache
 
-# Install system packages
+# Install system packages (INCLUDING SSL SUPPORT)
 RUN apt-get update && apt-get install -y \
     libzip-dev \
     unzip \
     git \
     curl \
+    libssl-dev \
+    pkg-config \
     && docker-php-ext-install zip pdo pdo_mysql
 
-# Install MongoDB + Redis extensions
+# Install MongoDB + Redis extensions (with SSL support)
 RUN pecl install mongodb redis \
     && docker-php-ext-enable mongodb redis
 
@@ -23,7 +25,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 WORKDIR /var/www/html
 
-# Copy backend code (WITHOUT vendor)
+# Copy backend code
 COPY . /var/www/html/
 
 # Install PHP dependencies inside container
