@@ -4,16 +4,25 @@ header("Content-Type: application/json");
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 switch ($uri) {
+
     case '/':
         echo json_encode(["status" => "ok", "message" => "Backend is running"]);
         break;
 
-    case '/health':
-        echo json_encode(["status" => "ok", "service" => "internship-app"]);
+    case '/api/test':
+        echo json_encode(["message" => "API is working"]);
         break;
 
-    case '/api/test':
-        require __DIR__ . '/api/test.php';
+    case '/api/signup':
+        require __DIR__ . '/api/register.php';
+        break;
+
+    case '/api/login':
+        require __DIR__ . '/api/login.php';
+        break;
+
+    case '/api/profile':
+        require __DIR__ . '/api/profile.php';
         break;
 
     default:

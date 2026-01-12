@@ -14,7 +14,7 @@ $(document).ready(function () {
 
     // LOAD PROFILE
     $.ajax({
-        url: "/internship-app/backend/api/profile.php",
+        url: "https://internship-app-lz1o.onrender.com/api/profile.php",
         method: "GET",
         data: { session_key: sessionKey },
         success: function (res) {
@@ -51,7 +51,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: "/internship-app/backend/api/profile.php",
+            url: "https://internship-app-lz1o.onrender.com/api/profile.php",
             method: "POST",
             data: {
                 session_key: sessionKey,
