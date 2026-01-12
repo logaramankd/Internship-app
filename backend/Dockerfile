@@ -12,16 +12,20 @@ RUN apt-get update && apt-get install -y \
 RUN pecl install mongodb redis \
     && docker-php-ext-enable mongodb redis
 
-# Enable rewrite
-RUN a2enmod rewrite
+# Enable Apache modules
+RUN a2enmod rewrite headers
 
-# Allow .htaccess overrides (CRITICAL)
+# Allow .htaccess overrides
 RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
 
 WORKDIR /var/www/html
 
 # Copy backend code
 COPY . /var/www/html/
+
+# Copy CORS config into Apache
+COPY cors.conf /etc/apache2/conf-available/cors.conf
+RUN a2enconf cors
 
 # Permissions
 RUN chown -R www-data:www-data /var/www/html \
